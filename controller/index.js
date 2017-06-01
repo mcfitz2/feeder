@@ -1,9 +1,6 @@
-var express = require("express");
 var mqtt = require("mqtt");
 var MongoClient = require('mongodb').MongoClient;
 var MQTTRouter = require("mqtt-route");
-
-var app = express();
 MongoClient.connect("mongodb://db/feeders").then((db) => {
     console.log("Connected to DB");
     var heartbeat_timer = null;
@@ -62,20 +59,18 @@ MongoClient.connect("mongodb://db/feeders").then((db) => {
         });
         router.init(client);
     });
-    app.get("/feeders", (req, res) => {
-        db.collection("feeders").find({}).toArray().then((feeders) => {
-            res.json(feeders);
-        }).catch((err) => {
-            res.status(500);
-            res.end();
-        })
+    var server = new zerorpc.Server({
+        feed: function(feederId, cups, reply) {
+            client.publish("/feeder/" + feederId + "/feed", JSON.stringify({
+                cups: cups
+            }));
+            reply(null);
+        }
     });
-    app.post("/feeders/:id/feed/:cups", (req, res) => {
-        client.publish("/feeder/"+req.params.id+"/feed", JSON.stringify({cups:req.params.cups}));
-        res.status(200);
-        res.end();
+    server.bind("tcp://0.0.0.0:4242");
+    server.on("error", function(error) {
+        console.error("RPC server error:", error);
     });
-    app.listen(8888);
 }).catch((err) => {
     console.log(err);
 });
