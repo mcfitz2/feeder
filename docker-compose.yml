@@ -1,0 +1,35 @@
+---
+version: "3"
+services:
+  web:
+    build: web
+    links:
+      - api:api
+      - db:db
+  api:
+    build: api
+    links:
+      - controller:controller
+      - db:db
+  db:
+    image: mongo
+    volumes:
+      - /var/lib/mongodb:/data/db
+  redis:
+    image: redis
+    
+  controller:
+    build: controller
+    links:
+      - db:db
+      - broker:broker
+    ports:
+      - 8888:8888
+  broker:
+    build: broker
+    links:
+      - redis:redis
+    ports:
+      - 1882:1883
+      - 8882:8883
+  
