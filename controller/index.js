@@ -1,6 +1,7 @@
 var mqtt = require("mqtt");
 var MongoClient = require('mongodb').MongoClient;
 var MQTTRouter = require("mqtt-route");
+var zerorpc = require("zerorpc");
 MongoClient.connect("mongodb://db/feeders").then((db) => {
     console.log("Connected to DB");
     var heartbeat_timer = null;
@@ -64,6 +65,16 @@ MongoClient.connect("mongodb://db/feeders").then((db) => {
             client.publish("/feeder/" + feederId + "/feed", JSON.stringify({
                 cups: cups
             }));
+            reply(null);
+        },
+        setSchedule: function(feederId, schedules, reply) {
+            client.publish("/feeder/" + feederId + "/schedule/set", JSON.stringify({
+                schedules: schedules
+            }));
+            reply(null);
+        },
+        clearSchedule: function(feederId, schedules, reply) {
+            client.publish("/feeder/" + feederId + "/schedule/clear", "");
             reply(null);
         }
     });
