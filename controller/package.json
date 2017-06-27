@@ -13,6 +13,7 @@
     "express": "^4.15.3",
     "mongodb": "^2.2.27",
     "mqtt": "^2.8.0",
-    "mqtt-route": "0.0.1"
+    "mqtt-route": "0.0.1",
+    "zerorpc": "^0.9.7"
   }
 }

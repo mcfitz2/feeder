@@ -1,16 +1,17 @@
 {
-    "name": "broker",
-    "version": "1.0.0",
-    "description": "",
-    "main": "index.js",
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1",
-        "start": "node index.js"
-    },
-    "author": "",
-    "license": "ISC",
-    "dependencies": {
-        "mosca": "^2.5.1",
-        "redis": "^2.7.1"
-    }
+  "name": "broker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "mosca": "^2.5.1",
+    "redis": "^2.7.1",
+    "zerorpc": "^0.9.7"
+  }
 }
