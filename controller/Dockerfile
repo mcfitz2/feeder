@@ -4,10 +4,12 @@ FROM node:alpine
 RUN mkdir -p /app
 WORKDIR /app
 
+
 # Install app dependencies
 COPY package.json /app/
-RUN npm install
-EXPOSE 8888
+RUN apk add --no-cache make gcc g++ python libzmq zeromq-dev && \
+  npm install && \
+  apk del make gcc g++ python 
 # Bundle app source
 COPY . /app
 
