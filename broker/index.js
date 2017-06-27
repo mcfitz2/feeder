@@ -11,7 +11,7 @@ var ascoltatore = {
 
 var settings = {
     port: 1883,
-    backend: ascoltatore,
+//    backend: ascoltatore,
         logger: {
             name: "secureExample",
             level: 20,
@@ -22,7 +22,7 @@ var server = new mosca.Server(settings);
 
 server.on('ready', setup);
 server.on('clientDisconnected', function(client) {
-    server.publish("/feeder/"+client.id+"/disconnect");
+   // server.publish("/feeder/"+client.id+"/disconnect", "OK");
 });
 function setup() {
     server.authorizePublish = (client, topic, payload, callback) => {
