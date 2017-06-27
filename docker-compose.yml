@@ -6,6 +6,8 @@ services:
     links:
       - api:api
       - db:db
+    ports:
+      - 5555:9999
   api:
     build: api
     links:
@@ -14,7 +16,7 @@ services:
   db:
     image: mongo
     volumes:
-      - /var/lib/mongodb:/data/db
+      - /home/micah/docker-apps/feeders/db:/data/db
   redis:
     image: redis
     
