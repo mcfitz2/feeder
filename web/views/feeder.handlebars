@@ -1,0 +1,12 @@
+<h4>
+    Name: {{ name }}
+</h4>
+<h4>
+    Last Seen: {{ lastSeen }}
+</h4>
+<h4>
+    Last Fed: {{ lastFeeding }}
+</h4>
+{{#each schedules}}
+	{{hour}}:{{minute}} - {{cups}} cups
+{{/each}}

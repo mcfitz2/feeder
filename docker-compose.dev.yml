@@ -4,7 +4,6 @@ services:
   web:
     build:
       context: web
-      dockerfile: Dockerfile.dev
     links:
       - api:api
       - db:db
@@ -15,7 +14,6 @@ services:
   api:
     build:
       context: api
-      dockerfile: Dockerfile.dev
     links:
       - controller:controller
       - db:db
@@ -28,7 +26,6 @@ services:
   controller:
     build:
       context: controller
-      dockerfile: Dockerfile.dev
     links:
       - db:db
       - broker:broker
