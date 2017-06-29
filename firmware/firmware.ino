@@ -33,7 +33,8 @@ boolean justBooted = true;
 char buf[40];
 WiFiManager wifiManager;
 WiFiClient net;
-MQTTClient client;
+
+MQTTClient client(512);
 
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP);
@@ -176,6 +177,8 @@ void setup() {
   reset_pos();
   wifiManager.autoConnect();
   client.begin(MQTT_HOST, MQTT_PORT, net); // MQTT brokers usually use port 8883 for secure connections
+    client.onMessage(messageReceived);
+
   timeClient.begin();
 
   connect();
@@ -198,8 +201,14 @@ void heartbeat() {
   }
   String strObj;
   root.printTo(strObj);
-  Serial.println(strObj);
-  client.publish("/feeder/" + ID + "/heartbeat", strObj);
+  boolean success = client.publish("/feeder/" + ID + "/heartbeat", strObj);
+  if (success) {
+    Serial.println("publish successful");
+  } else {
+        Serial.println("publish failed");
+        //Serial.println(client.lastError());
+
+  }
 }
 
 void connect() {
@@ -214,6 +223,8 @@ void connect() {
 
   client.subscribe("/feeder/" + ID + "/feed");
   client.subscribe("/feeder/" + ID + "/schedules/set");
+    client.subscribe("/feeder/" + ID + "/schedules/unset");
+
   client.subscribe("/feeder/identify");
   heartbeat();
 }
@@ -281,7 +292,9 @@ void loop() {
     connect();
   }
 }
-void messageReceived(String topic, String payload, char * bytes, unsigned int length) {
+void messageReceived(String &topic, String &payload) {
+  Serial.println(topic);
+  Serial.println(payload); 
   if (topic == "/feeder/" + ID + "/feed") {
     Serial.println("Feeding");
     StaticJsonBuffer<200> jsonBuffer;
