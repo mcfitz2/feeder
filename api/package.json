@@ -5,8 +5,19 @@
     "main": "index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "start": "node index.js"
+        "start": "nodemon index.js"
+    },
+    "devDependencies": {
+        "nodemon": "latest",
     },
     "author": "",
-    "license": "ISC"
+    "license": "ISC",
+    "dependencies": {
+        "body-parser": "^1.17.2",
+        "express": "^4.15.3",
+        "grant-express": "^3.7.2",
+        "mongodb": "^2.2.29",
+        "zeromq": "^4.4.1",
+        "zerorpc": "^0.9.7"
+    }
 }

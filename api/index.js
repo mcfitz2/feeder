@@ -2,19 +2,22 @@ var express = require("express");
 var MongoClient = require('mongodb').MongoClient;
 var app = express();
 var ObjectID = require('mongodb').ObjectID;
+var bodyParser = require("body-parser");
+var zerorpc = require("zerorpc");
+app.use(bodyParser.json());
 MongoClient.connect("mongodb://db/feeders").then((db) => {
     console.log("Connected to DB");
     var client = new zerorpc.Client();
     client.connect("tcp://controller:4242");
     console.log("Connecte to controller")
-    app.get("/users", (req, res) => {
-        db.collection("users").find({}).toArray().then((feeders) => {
-            res.json(feeders);
-        }).catch((err) => {
-            res.status(500);
-            res.end();
-        })
-    });
+    /*    app.get("/users", (req, res) => {
+            db.collection("users").find({}).toArray().then((feeders) => {
+                res.json(feeders);
+            }).catch((err) => {
+                res.status(500);
+                res.end();
+            })
+        });*/
     app.get("/users/:id", (req, res) => {
         db.collection("users").findOne({
             _id: req.params.id
@@ -40,49 +43,50 @@ MongoClient.connect("mongodb://db/feeders").then((db) => {
             res.end();
         })
     });
-    app.post("/users", (req, res) => {
-        //TODO
-        //do validation on input
-        db.collection("users").insertOne(req.body).then((result) => {
-            res.status(200);
-            res.end();
-        }).catch((err) => {
-            res.status(500);
-            res.end();
-        })
-    });
-    app.post("/users/:id", (req, res) => {
-        db.collection("users").update({
-            _id: ObjectID(req.params.id)
-        }, {
-            $set: req.body
-        }).then((result) => {
-            res.status(200);
-            res.end();
-        }).catch((err) => {
-            res.status(500);
-            res.end();
-        })
-    });
-    app.delete("/users/:id", (req, res) => {
-        db.collection("users").remove({
-            _id: ObjectID(req.params.id)
-        }).then((result) => {
-            res.status(200);
-            res.end();
-        }).catch((err) => {
-            res.status(500);
-            res.end();
-        })
-    });
-    app.get("/feeders", (req, res) => { //get all feeders
-        db.collection("feeders").find({}).toArray().then((feeders) => {
-            res.json(feeders);
-        }).catch((err) => {
-            res.status(500);
-            res.end();
-        })
-    });
+    /*    app.post("/users", (req, res) => {
+            //TODO
+            //do validation on input
+            db.collection("users").insertOne(req.body).then((result) => {
+                res.status(200);
+                res.end();
+            }).catch((err) => {
+                res.status(500);
+                res.end();
+            })
+        });
+        app.post("/users/:id", (req, res) => {
+            db.collection("users").update({
+                _id: ObjectID(req.params.id)
+            }, {
+                $set: req.body
+            }).then((result) => {
+                res.status(200);
+                res.end();
+            }).catch((err) => {
+                res.status(500);
+                res.end();
+            })
+        });
+        app.delete("/users/:id", (req, res) => {
+            db.collection("users").remove({
+                _id: ObjectID(req.params.id)
+            }).then((result) => {
+                res.status(200);
+                res.end();
+            }).catch((err) => {
+                res.status(500);
+                res.end();
+            })
+        });
+        app.get("/feeders", (req, res) => { //get all feeders
+            db.collection("feeders").find({}).toArray().then((feeders) => {
+                res.json(feeders);
+            }).catch((err) => {
+                res.status(500);
+                res.end();
+            })
+        });
+    */
     app.get("/feeders/:id", (req, res) => { //get a single feeder
         db.collection("feeders").findOne({
             _id: req.params.id
@@ -139,4 +143,5 @@ MongoClient.connect("mongodb://db/feeders").then((db) => {
             }
         });
     });
+    app.listen(8888);
 });

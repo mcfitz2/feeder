@@ -29,13 +29,15 @@ MongoClient.connect("mongodb://db/feeders").then((db) => {
             client.publish("/feeder/identify", "HELLO");
         }, 5000);
         console.log("connected to broker");
-        router.route("/feeder/+/heartbeat", (topic) => {
-            console.log(1, topic);
+        router.route("/feeder/+/heartbeat", (topic, payload) => {
+            console.log(1, topic, payload);
+            var data = JSON.parse(payload);
             db.collection("feeders").findOneAndUpdate({
                 _id: topic.split("/")[2]
             }, {
                 $set: {
-                    lastSeen: new Date()
+                    lastSeen: new Date(),
+                    schedules:data.schedules,
                 }
             }, {
                 upsert: true

@@ -2,28 +2,39 @@
 version: "3"
 services:
   web:
-    build: web
+    build:
+      context: web
+      dockerfile: Dockerfile.dev
     links:
       - api:api
       - db:db
     ports:
       - 5555:9999
+    volumes:
+      - ./web:/app
   api:
-    build: api
+    build:
+      context: api
+      dockerfile: Dockerfile.dev
     links:
       - controller:controller
       - db:db
+    volumes:
+     - ./api:/app
   db:
     image: mongo
     volumes:
       - ./db:/data/db
   controller:
-    build: controller
+    build:
+      context: controller
+      dockerfile: Dockerfile.dev
     links:
       - db:db
       - broker:broker
-    ports:
-      - 8888:8888
+    volumes:
+     - ./controller:/app
+    
   broker:
     build: broker
     ports:

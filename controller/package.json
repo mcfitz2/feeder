@@ -1,21 +1,24 @@
 {
-  "name": "controller",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "express": "^4.15.3",
-    "mongodb": "^2.2.27",
-    "mqtt": "^2.8.0",
-    "mqtt-route": "0.0.1",
-    "zerorpc": "^0.9.7",
-    "zeromq":"^4.4.1"
+    "name": "controller",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "start": "nodemon index.js",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "devDependencies": {
+        "nodemon": "latest",
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "express": "^4.15.3",
+        "mongodb": "^2.2.27",
+        "mqtt": "^2.8.0",
+        "mqtt-route": "0.0.1",
+        "zerorpc": "^0.9.7",
+        "zeromq": "^4.4.1"
 
-  }
+    }
 }
