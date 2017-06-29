@@ -1,16 +1,12 @@
-FROM node:alpine
+# for an Alpine Linux-based image:
+FROM lucsorel/zeromq-bindings:alpinelinux3.3-zeromq4.3.x-nodejs4.3.x
 
-# Create app directory
+
+# installs the NodeJS application and dependencies (including zmq - https://github.com/JustinTulloss/zeromq.node):
 RUN mkdir -p /app
 WORKDIR /app
-
-
-# Install app dependencies
-COPY package.json /app/
-RUN apk add --no-cache make gcc g++ python libzmq zeromq-dev && \
-  npm install && \
-  apk del make gcc g++ python 
-# Bundle app source
 COPY . /app
+RUN npm install
 
+# starts the application
 CMD [ "npm", "start" ]

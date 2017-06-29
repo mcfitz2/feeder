@@ -27,7 +27,7 @@ MongoClient.connect("mongodb://db/feeders").then((db) => {
     client.on('connect', function() {
         heartbeat_timer = setInterval(() => {
             client.publish("/feeder/identify", "HELLO");
-        }, 30000);
+        }, 5000);
         console.log("connected to broker");
         router.route("/feeder/+/heartbeat", (topic) => {
             console.log(1, topic);
