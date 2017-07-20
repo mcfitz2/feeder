@@ -1,32 +1,36 @@
 ---
 version: "3"
 services:
-  web:
+  web-service:
     build: web
-    links:
-      - api:api
-      - db:db
     ports:
       - 5555:9999
-  api:
+    depends_on:
+      - api-service
+  api-service:
     build: api
-    links:
-      - controller:controller
-      - db:db
+    ports:
+      - 8888:8888
+    depends_on:
+      - feeder-service
+      - user-service
   db:
     image: mongo
     volumes:
       - ./db:/data/db
-  controller:
-    build: controller
-    links:
-      - db:db
-      - broker:broker
-    ports:
-      - 8888:8888
+  feeder-service:
+    build: feeder-service
+    depends_on:
+      - broker
+      - db
   broker:
     build: broker
     ports:
       - 1882:1883
       - 8882:8883
+  user-service:
+    build: user-service
+    depends_on:
+      - db
+
   

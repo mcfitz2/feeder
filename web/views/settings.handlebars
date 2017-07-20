@@ -1,0 +1,112 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.js">
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.10/moment-timezone-with-data.js">
+</script>
+<link href="/css/settings.css" media="screen" rel="stylesheet" type="text/css"/>
+</script>
+<script>
+    $(() => {
+        var timezone = moment.tz.names();
+  for (var i = 0; i < timezone.length; i++) {
+    $('#timezone').append('<option value="' + timezone[i] + '">' + timezone[i] + '</option>');
+  }
+});
+    $(document).on('click', '.remove-button', function () {
+        if ($(this).closest("li").find('input[name="id"]').val() == "-1") {
+            $(this).closest("li").remove();
+        } else {
+            var deleted = $(this).closest("li").find('input[name="deleted"]');
+            deleted.val(deleted.val() === "true" ? "false" : "true");
+            $(this).closest("li").toggleClass("disabled-schedule");
+            $(this).toggleClass("btn-danger") 
+            if (deleted.val() === "true") {
+                $(this).closest("li").find('input').prop("readonly");
+            } else {
+                $(this).closest("li").find('input').removeProp("readonly");
+            }
+        }
+        //$(this).closest('li')
+    });
+    $(document).on('click', '.add-button', function () {
+        $('#schedule-list').append($("#empty-schedule").html());
+    });
+  $(function() {
+    $('.timepicker').datetimepicker({
+      pickDate: false
+    });
+  });
+</script>
+<div class="container">
+    <form action="/feeders/{{id}}/settings" method="POST">
+        <div class="row">
+            <div class="col-md-12">
+                <h2>
+                    General
+                </h2>
+                <div>
+                    <label>
+                        Feeder Name
+                        <input name="name" type="text" value="{{name}}"/>
+                    </label>
+                </div>
+                <div>
+                    <label>
+                        Timezone
+                        <select id="timezone" name="timezone">
+                            <option selected="true" value="{{timezone}}">
+                                {{timezone}}
+                            </option>
+                        </select>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <hr/>
+        <div class="row">
+            <div class="col-md-12">
+                <h2>
+                    Schedules
+                </h2>
+                <ul class="list-unstyled" id="schedule-list">
+                    {{#each schedules}}
+                    <li>
+                        <input name="id" type="hidden" value="{{id}}"/>
+                        <input name="deleted" type="hidden" value="false"/>
+                        <input name="time" type="time" value="{{hour}}:{{minute}}"/>
+                        <label>
+                            <input name="cups" type="number" value="{{cups}}"/>
+                            cups
+                        </label>
+                        <button class="btn btn-danger remove-button" type="button">
+                            <i aria-hidden="true" class="fa fa-times">
+                            </i>
+                        </button>
+                    </li>
+                    {{/each}}
+                </ul>
+            </div>
+        </div>
+        <button class="btn add-button" type="button">
+            <i aria-hidden="true" class="fa fa-plus-square">
+            </i>
+        </button>
+        <hr/>
+        <div class="row">
+            <div class="col-md-12">
+                <input class="btn" name="submit" type="submit" value="Save Settings"/>
+            </div>
+        </div>
+    </form>
+</div>
+<script id="empty-schedule" type="text/html">
+    <li style="list-style: none">
+                            <input name="id" type="hidden" value="-1"/>
+                        <input name="deleted" type="hidden" value="false"/>
+         <input type="time" name="time">
+                        <label><input name="cups" type="number" value="1"/>cups</label>
+            <button class="btn remove-button" type="button">
+                <i aria-hidden="true" class="fa fa-times">
+                </i>
+            </button>
+        </li>
+</script>

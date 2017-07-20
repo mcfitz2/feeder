@@ -1,0 +1,19 @@
+{
+  "name": "feeder-service",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dnode": "^1.2.2",
+    "mongodb": "^2.2.27",
+    "mongoose": "^4.10.5",
+    "mqtt": "^2.8.0",
+    "mqtt-route": "0.0.1"
+  }
+}

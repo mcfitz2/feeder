@@ -1,12 +1,41 @@
 <h4>
-    Name: {{ name }}
+    Name: {{ feeder.name }}
 </h4>
 <h4>
-    Last Seen: {{ lastSeen }}
+    Last Seen: {{ feeder.lastSeen }}
 </h4>
 <h4>
-    Last Fed: {{ lastFeeding }}
+    Last Fed: {{ feeder.lastFeeding }}
 </h4>
-{{#each schedules}}
-	{{hour}}:{{minute}} - {{cups}} cups
-{{/each}}
+<table>
+    <tr>
+        <th>
+            Time
+        </th>
+        <th>
+            Amount
+        </th>
+    </tr>
+    {{#each feeder.schedules}}
+    <tr>
+        <td>
+            {{hour}}:{{minute}}
+        </td>
+        <td>
+            {{cups}} cups
+        </td>
+    </tr>
+    {{/each}}
+</table>
+<form method="POST" action="/feeders/{{feeder._id}}">
+    <select name="userId">
+        {{#each users}}
+        <option value="{{_id}}">
+            {{email}}
+        </option>
+        {{/each}}
+    </select>
+    <input type="submit" value="Submit">
+        Assign to user
+    </input>
+</form>

@@ -1,0 +1,6 @@
+li.disabled-schedule input {
+    color: #DCDAD1;
+}
+#schedule-list input[name="cups"] {
+	padding-right:3px;
+}
