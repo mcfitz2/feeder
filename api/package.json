@@ -5,10 +5,7 @@
     "main": "index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "start": "nodemon index.js"
-    },
-    "devDependencies": {
-        "nodemon": "latest"
+        "start": "node index.js"
     },
     "author": "",
     "license": "ISC",
@@ -17,7 +14,7 @@
         "express": "^4.15.3",
         "grant-express": "^3.7.2",
         "mongodb": "^2.2.29",
-        "zeromq": "^4.4.1",
-        "zerorpc": "^0.9.7"
+        "mqtt-rpc": "git+https://git@github.com/mcfitz2/mqtt-rpc.git"
+
     }
 }

@@ -3,3 +3,4 @@ node_modules
 feeder.py
 db
 npm-debug.log
+feeder.env
