@@ -26,6 +26,9 @@ function ensureLoggedIn() {
         if (!req.user || !req.user.id) {
             return res.redirect('/login');
         }
+        if (!req.user.email == "mcfitz2@gmail.com") {
+            return res.end("You need to be admin");
+        }
         next();
     };
 }
@@ -55,6 +58,7 @@ passport.use(new LocalStrategy(function(username, password, done) {
         if (err) {
             console.log("ERROR", err);
             return done(err, false);
+
         } else {
             console.log("BODY", body)
             return done(null, body);
@@ -162,7 +166,7 @@ app.post("/admin/feeders/:id/delete", ensureAdmin(), (req, res) => {
             res.status(500);
             return res.end(err);
         }
-        res.redirect(req.session.returnTo);
+        res.redirect(req.session.returnTo); ===
     });
 });
 app.get("/feeders/:id/settings", ensureLoggedIn(), (req, res) => {
@@ -272,8 +276,8 @@ app.post("/feeders/claim", ensureLoggedIn(), (req, res) => {
         url: "http://api-service:8888/feeders/" + req.body.feederId,
         json: true,
         body: {
-            owner: req.user.id, 
-            name:req.user.firstName+"'s New Feeder"
+            owner: req.user.id,
+            name: req.user.firstName + "'s New Feeder"
         }
     }, (err, r, body) => {
         if (err) {

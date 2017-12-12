@@ -189,6 +189,7 @@ void heartbeat() {
   StaticJsonBuffer<HEARTBEAT_JSON_SIZE> jsonBuffer;
   JsonObject& root = jsonBuffer.createObject();
   root["time"] = timeClient.getFormattedTime();
+  root["maxSchedules"] = dtNBR_ALARMS;
   JsonArray& schedules = root.createNestedArray("schedules");
   for (int i = 0; i < dtNBR_ALARMS; i++) {
     if (alarms[i].enabled) {
@@ -309,5 +310,5 @@ void messageReceived(String &topic, String &payload) {
   } else if (topic == "/feeder/" + ID + "/schedules/unset") {
     Serial.println("Deleting schedule");
     unsetAlarm(payload);
-  }
+  } 
 }

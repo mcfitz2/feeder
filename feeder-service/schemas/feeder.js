@@ -18,8 +18,14 @@ var feederSchema = new Schema({
         ref: 'User'
     },
     syncing: Boolean,
-    maxSchedules:{type:Number, required:true}, 
-    timezone:{type:String, enum: moment.tz.names()} 
+    maxSchedules: {
+        type: Number,
+        required: true
+    },
+    timezone: {
+        type: String,
+        enum: moment.tz.names()
+    }
 });
 
 module.exports = {

@@ -1,62 +1,68 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>
-            Feeders
-        </title>
-        <script src="https://code.jquery.com/jquery-3.2.1.min.js">
-        </script>
-        <script src="http://timeago.yarp.com/jquery.timeago.js">
-        </script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js">
-        </script>
-        <link crossorigin="anonymous" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" rel="stylesheet">
-        </link>
-        <link crossorigin="anonymous" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" rel="stylesheet">
-            <style media="screen" type="text/css">
-                .container {
+
+<head>
+    <title>
+        Feeders
+    </title>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js">
+    </script>
+    <script src="http://timeago.yarp.com/jquery.timeago.js">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js">
+    </script>
+    <link crossorigin="anonymous" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" rel="stylesheet">
+    </link>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-timepicker/0.5.2/js/bootstrap-timepicker.js">
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-timepicker/0.5.2/css/bootstrap-timepicker.css" rel="stylesheet" />
+    <link crossorigin="anonymous" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" rel="stylesheet">
+    <style media="screen" type="text/css">
+        .container {
             padding-top: 30px;
         }
-            </style>
-            <script crossorigin="anonymous" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js">
-            </script>
-            <script type="text/javascript">
-                $(function() {
-                $("time.timeago").timeago();
-            });
-            </script>
-        </link>
-    </head>
-    <body>
-        <nav class="navbar navbar-toggleable-md navbar-inverse bg-inverse">
-            <button aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler navbar-toggler-right" data-target="#navbarSupportedContent" data-toggle="collapse" type="button">
+    </style>
+    <script crossorigin="anonymous" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js">
+    </script>
+    <script type="text/javascript">
+        $(function() {
+            $("time.timeago").timeago();
+        });
+    </script>
+    </link>
+</head>
+
+<body>
+    <nav class="navbar navbar-toggleable-md navbar-inverse bg-inverse">
+        <button aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler navbar-toggler-right" data-target="#navbarSupportedContent" data-toggle="collapse" type="button">
                 <span class="navbar-toggler-icon">
                 </span>
             </button>
-            <a class="navbar-brand" href="#">
+        <a class="navbar-brand" href="#">
                 Feeders
             </a>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item active">
-                        <a class="nav-link" href="/dashboard">
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/dashboard">
                             Dashboard
                             <span class="sr-only">
                                 (current)
                             </span>
                         </a>
-                    </li>
-                    <li class="nav-item active">
-                        <a class="nav-link" href="/feeders/claim">
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="/feeders/claim">
                             Add Feeder
                             <span class="sr-only">
                                 (current)
                             </span>
                         </a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-        {{{ body }}}
-    </body>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    {{{ body }}}
+</body>
+
 </html>

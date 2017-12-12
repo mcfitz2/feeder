@@ -1,12 +1,12 @@
 {{#each feeders}}
 <h4>
-    Name: {{ name }}
+    Name: {{ feeder.name }}
 </h4>
 <h4>
-    Last Seen: {{ lastSeen }}
+    Last Seen: {{ feeder.lastSeen }}
 </h4>
 <h4>
-    Last Fed: {{ lastFeeding }}
+    Last Fed: {{ feeder.lastFeeding }}
 </h4>
 <h4>Owner ID: {{ owner }}</h4>
 <table>
@@ -48,3 +48,4 @@
 </form>
 <hr>
 {{/each}}
+

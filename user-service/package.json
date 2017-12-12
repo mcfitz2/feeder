@@ -13,6 +13,5 @@
         "mongoose": "^4.10.5",
         "passport-local-mongoose": "^4.0.0",
         "mqtt-rpc": "git+https://git@github.com/mcfitz2/mqtt-rpc.git"
-
     }
 }

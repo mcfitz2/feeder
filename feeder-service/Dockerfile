@@ -1,4 +1,3 @@
-# for an Alpine Linux-based im
 FROM node:alpine
 
 # installs the NodeJS application and dependencies (including zmq - https://github.com/JustinTulloss/zeromq.node):
