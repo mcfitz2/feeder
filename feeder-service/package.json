@@ -1,0 +1,20 @@
+{
+    "name": "feeder-service",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "start": "node index.js",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "mongodb": "^2.2.27",
+        "mongoose": "^4.10.5",
+        "mqtt": "^2.8.0",
+        "mqtt-route": "0.0.1",
+        "moment-timezone": "^0.5.13",
+        "mqtt-rpc": "git+https://git@github.com/mcfitz2/mqtt-rpc.git"
+    }
+}
