@@ -1,10 +1,25 @@
-{{#each feeders}}
-<div>
-    <a href="/feeders/{{id}}">
-        {{name}}
-    </a>
-    <button class="btn btn-success">
-        Feed 1 cup
-    </button>
+<div class="container">
+    <ul class="list-unstyled" id="feeders">
+        {{#each feeders}}
+        <li>
+            <form action="/feeders/{{id}}/feed" method="POST">
+                <span>
+                    <a href="/feeders/{{id}}/settings">
+                        {{name}}
+                    </a>
+                </span>
+                <button class="btn">
+                    <i class="fa fa-cutlery">
+                    </i>
+                </button>
+            </form>
+            <span>
+                Last seen
+                <time class="timeago" datetime="{{lastSeen}}">
+                    {{lastSeen}}
+                </time>
+            </span>
+        </li>
+        {{/each}}
+    </ul>
 </div>
-{{/each}}
