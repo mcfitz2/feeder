@@ -21,7 +21,7 @@ mongoose.connect("mongodb://db/feeders").then(() => {
     console.log("Connected to DB");
     var heartbeat_timer = null;
     var client = mqtt.connect({
-        port: 1883,
+        port: 8888,
         host: "broker",
         clientId: "debug39393"
     });
