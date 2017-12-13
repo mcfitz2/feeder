@@ -1,36 +1,42 @@
 ---
 version: "3"
 services:
-  web-service:
+  web:
     build: web
     ports:
-      - 5555:9999
+      - 5555:8888
     depends_on:
-      - api-service
-  api-service:
+      - api
+  api:
     build: api
     ports:
       - 8888:8888
     depends_on:
-      - feeder-service
-      - user-service
+      - feeder
+      - user
   db:
     image: mongo
     volumes:
       - /home/micah/db:/data/db
-  feeder-service:
-    build: feeder-service
+  feeder:
+    build: feeder
     depends_on:
       - broker
       - db
   broker:
     build: broker
     ports:
-      - 1882:1883
-      - 8882:8883
-  user-service:
-    build: user-service
+      - 1882:8888
+  user:
+    build: user
     depends_on:
       - db
-
+  #notify:
+  #  build: notify
+  logger:
+    build: logger
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+  #admin:
+  #  build: admin
   
