@@ -10,11 +10,11 @@ var ascoltatore = {
 
 
 var settings = {
-    port: 1883,
+    port: 8888,
     //    backend: ascoltatore,
     logger: {
-        name: "secureExample",
-        level: 20,
+        name: "broker",
+        level: 30,
     },
 };
 
