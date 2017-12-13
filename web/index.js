@@ -166,7 +166,7 @@ app.post("/admin/feeders/:id/delete", ensureAdmin(), (req, res) => {
             res.status(500);
             return res.end(err);
         }
-        res.redirect(req.session.returnTo); ===
+        res.redirect(req.session.returnTo);
     });
 });
 app.get("/feeders/:id/settings", ensureLoggedIn(), (req, res) => {
@@ -340,4 +340,4 @@ app.post("/feeders/:id/settings", ensureLoggedIn(), (req, res) => {
     });
 });
 // /settings/:id
-app.listen(9999)
+app.listen(8888)
