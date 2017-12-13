@@ -6,7 +6,17 @@ import logging
 import datetime
 import time
 import schedule
-logging.basicConfig(level=logging.DEBUG)
+#logging.basicConfig(level=logging.DEBUG)
+class MQTTHandler(logging.Handler):
+	def __init__(self, client):
+		super().__init__()
+		self.client = client
+
+	def emit(self, record):
+		log_entry = json.loads(self.format(record))
+		log_entry.update(self.client.config)
+		self.client.publish("logs/feeders/%s" % self.client.config["id"], json.dumps(log_entry))        
+
 class Config(dict):
 	def __init__(self, path="config.json"):
 		self.path = path
@@ -27,6 +37,7 @@ class Client(mqtt.Client):
 	def __init__(self, config):
 		mqtt.Client.__init__(self, config["id"])
 		self.config = config
+	def start(self):
 		self.connect(self.config["broker_address"], self.config["port"]) #connect to broker
 		#self.on_message = on_message
 		self.subscribe("/feeder/" + self.config["id"] + "/feed")
@@ -34,7 +45,8 @@ class Client(mqtt.Client):
 		self.subscribe("/feeder/" + self.config["id"] + "/schedules/unset")
 		self.subscribe("/feeder/identify")
 		logging.info("Client started, ID = %s" % self.config["id"])
-	def start(self):
+		logging.info("Device Key is %s" % self.config["id"])
+
 		self.setup_schedules()
 		self.loop_start()
 		while True:
@@ -45,7 +57,7 @@ class Client(mqtt.Client):
 				self.loop_stop()
 				break
 	def heartbeat(self):
-		logging.debug("Sending Heartbeat %s" % self.config)
+		logging.debug("Sending Heartbeat")
 		if schedule.default_scheduler.next_run:
 			self.config["nextFeeding"] = schedule.default_scheduler.next_run.isoformat()
 		self.publish("/feeder/" + self.config["id"] + "/heartbeat", json.dumps(self.config))
@@ -90,10 +102,18 @@ class Client(mqtt.Client):
 			self.publish("/feeders/" + self.config["id"] + "/feeding", json.dumps(self.config))
 			self.config.save()
 		else:
-			logging.info("Topic = %s, Message = %s" % (message.topic, payload))
+			logging.debug("Topic = %s, Message = %s" % (message.topic, payload))
 if __name__ == "__main__":
 	config = Config("config.json")
 	c = Client(config)
-	logging.info("Device Key is %s" % config["id"])
+	mqttHandler = MQTTHandler(c)
+	#mqttHandler.setLevel(logging.DEBUG)
+	console  = logging.StreamHandler()  
+	logger = logging.getLogger()
+	mqttHandler.setFormatter(logging.Formatter('{"time":"%(asctime)s", "level":"%(levelname)s", "message":"%(message)s"}'))
+	logger.addHandler(console)  
+	logger.setLevel(logging.DEBUG)	 
+	logger.addHandler(mqttHandler)
+
 	c.start()
 
