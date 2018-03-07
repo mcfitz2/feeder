@@ -7,6 +7,12 @@ services:
       - 5555:8888
     depends_on:
       - api
+      - logstash
+    logging:
+      driver: "syslog"
+      options:
+        syslog-address: "tcp://localhost:5000"
+        
   api:
     build: api
     ports:
@@ -14,29 +20,97 @@ services:
     depends_on:
       - feeder
       - user
+      - logstash
+    logging:
+      driver: "syslog"
+      options:
+        syslog-address: "tcp://localhost:5000"
+        
   db:
     image: mongo
     volumes:
       - /home/micah/db:/data/db
+    logging:
+      driver: "syslog"
+      options:
+        syslog-address: "tcp://localhost:5000"
+    depends_on:
+      - logstash    
   feeder:
     build: feeder
     depends_on:
       - broker
       - db
+      - logstash
+    logging:
+      driver: "syslog"
+      options:
+        syslog-address: "tcp://localhost:5000"
+        
   broker:
     build: broker
     ports:
       - 1882:8888
+      - 8887:7777
+    logging:
+      driver: "syslog"
+      options:
+        syslog-address: "tcp://localhost:5000"
+    depends_on:
+      - logstash    
   user:
     build: user
     depends_on:
       - db
-  #notify:
-  #  build: notify
-  logger:
-    build: logger
+      - logstash
+    logging:
+      driver: "syslog"
+      options:
+        syslog-address: "tcp://localhost:5000"
+        
+  admin:
+    build: admin
+    ports:
+      - 8889:8888
+    logging:
+      driver: "syslog"
+      options:
+        syslog-address: "tcp://localhost:syslog"
+    depends_on:
+      - logstash    
+
+  elasticsearch:
+    build:
+      context: elasticsearch/
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-  #admin:
-  #  build: admin
+      - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+
+  logstash:
+    build:
+      context: logstash/
+    volumes:
+      - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
+      - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
+    ports:
+      - "5000:5000"
+    environment:
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+    depends_on:
+      - elasticsearch
+
+  kibana:
+    build:
+      context: kibana/
+    volumes:
+      - ./kibana/config/:/usr/share/kibana/config:ro
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+
   

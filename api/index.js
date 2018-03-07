@@ -6,17 +6,18 @@ var mqtt = require('mqtt'),
 app.use(bodyParser.json());
 
 
-var mqttclient = mqtt.connect('mqtt://broker:1883', );
+var mqttclient = mqtt.connect('mqtt://broker:8888', );
 var client = mqttrpc.client(mqttclient);
 
 app.post("/users/authenticate", (req, res) => {
+    console.log("Got auth request", req.body);
     client.callRemote('RPC/users', 'authenticateUser', {
         username: req.body.username,
         password: req.body.password
     }, function(err, user) {
         if (err) {
             res.status(401);
-            return res.end();
+            return res.send(err).end();
         } else {
             return res.json(user);
         }

@@ -1,0 +1,22 @@
+<html>
+  <head>
+    <script src="/mqtt.js"></script>
+  </head>
+  <body>
+
+    <script>
+ws = new WebSocket('ws://micahf.com:8887');
+
+/* Define websocket handlers */
+      ws.onmessage = function(evt) {
+	console.log(evt.data);
+                };
+      ws.onclose = function() {
+	console.log('socket closed');
+                };
+      ws.onopen = function() {
+                console.log('connected...');
+            };
+</script>
+  </body>
+</html>

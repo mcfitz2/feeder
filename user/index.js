@@ -4,7 +4,7 @@ var mqtt = require('mqtt')
 var mqttrpc = require('mqtt-rpc')
 mongoose.set("debug", true)
 mongoose.connect("mongodb://db/feeders").then(() => {
-    var mqttclient = mqtt.connect('mqtt://broker:1883');
+    var mqttclient = mqtt.connect('mqtt://broker:8888');
     var server = mqttrpc.server(mqttclient);
     server.format('json');
     server.provide('RPC/users', 'registerUser', function(context, reply) {
@@ -39,6 +39,7 @@ mongoose.connect("mongodb://db/feeders").then(() => {
         }).catch(reply);
     });
     server.provide('RPC/users', 'authenticateUser', function(context, reply) {
+	console.log("got auth request",  context);
         User.findOne({
             username: context.username
         }).exec((err, user) => {
@@ -55,6 +56,7 @@ mongoose.connect("mongodb://db/feeders").then(() => {
                     if (err) {
                         reply(err, false);
                     } else {
+			console.log("sending response", fixed);
                         reply(err, fixed)
                     }
                 });

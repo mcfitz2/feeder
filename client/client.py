@@ -62,7 +62,7 @@ class Client(mqtt.Client):
 			self.config["nextFeeding"] = schedule.default_scheduler.next_run.isoformat()
 		self.publish("/feeder/" + self.config["id"] + "/heartbeat", json.dumps(self.config))
 	def feed(self, cups):
-		logging.info("Dispensing %d cups" % cups)
+		logging.info("Dispensing %.1f cups" % cups)
 	def setup_schedules(self):
 
 		schedule.clear("feedings")
@@ -71,7 +71,7 @@ class Client(mqtt.Client):
 				schedule.every().day.at("%s:%s" % (sched["hour"], sched["minute"])).do(self.feed, sched["cups"]).tag("feedings")
 	def on_message(self, client, userdata, message):
 		try:
-			payload = json.loads(message.payload)
+			payload = json.loads(message.payload.decode('utf-8'))
 		except Exception as e:
 			logging.error(str(e))
 			logging.error("Payload parsing failed. Payload = %s" % message.payload)

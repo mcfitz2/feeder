@@ -48,7 +48,7 @@ function ensureAdmin() {
 }
 passport.use(new LocalStrategy(function(username, password, done) {
     request.post({
-        url: "http://api-service:8888/users/authenticate",
+        url: "http://api:8888/users/authenticate",
         body: {
             username: username,
             password: password
@@ -126,9 +126,9 @@ app.get('/logout', function(req, res) {
     res.redirect('/login');
 });
 app.get("/dashboard", ensureLoggedIn(), function(req, res) {
-    console.log("LOGGED IN", req.user);
+    console.log("Dashboard", "LOGGED IN", req.user);
     request.get({
-        url: "http://api-service:8888/users/" + req.user.id + "/feeders",
+        url: "http://api:8888/users/" + req.user.id + "/feeders",
         json: true
     }, function(err, r, body) {
         if (err) {
@@ -144,10 +144,10 @@ app.get("/dashboard", ensureLoggedIn(), function(req, res) {
 });
 app.post("/feeders/:id/feed", ensureLoggedIn(), (req, res) => {
     request.post({
-        url: "http://api-service:8888/feeders/" + req.params.id + "/feed",
+        url: "http://api:8888/feeders/" + req.params.id + "/feed",
         json: true,
         body: {
-            cups: 1
+            cups: 0.2
         }
     }, (err, r, body) => {
         if (err) {
@@ -159,7 +159,7 @@ app.post("/feeders/:id/feed", ensureLoggedIn(), (req, res) => {
 });
 app.post("/admin/feeders/:id/delete", ensureAdmin(), (req, res) => {
     request.delete({
-        url: "http://api-service:8888/feeders/" + req.params.id,
+        url: "http://api:8888/feeders/" + req.params.id,
         json: true,
     }, (err, r, body) => {
         if (err) {
@@ -171,7 +171,7 @@ app.post("/admin/feeders/:id/delete", ensureAdmin(), (req, res) => {
 });
 app.get("/feeders/:id/settings", ensureLoggedIn(), (req, res) => {
     request.get({
-        url: "http://api-service:8888/feeders/" + req.params.id,
+        url: "http://api:8888/feeders/" + req.params.id,
         json: true,
     }, (err, r, body) => {
         if (err) {
@@ -198,7 +198,7 @@ app.get("/feeders/:id/settings", ensureLoggedIn(), (req, res) => {
 });
 app.get("/admin/feeders/unclaimed", ensureAdmin(), (req, res) => {
     request.get({
-        url: "http://api-service:8888/feeders/unclaimed",
+        url: "http://api:8888/feeders/unclaimed",
         json: true
     }, function(err, r, feeders) {
         if (err) {
@@ -208,7 +208,7 @@ app.get("/admin/feeders/unclaimed", ensureAdmin(), (req, res) => {
         }
         console.dir(feeders);
         request.get({
-            url: "http://api-service:8888/users",
+            url: "http://api:8888/users",
             json: true
         }, function(err, r, users) {
             if (err) {
@@ -226,7 +226,7 @@ app.get("/admin/feeders/unclaimed", ensureAdmin(), (req, res) => {
 });
 app.get("/admin/feeders", ensureAdmin(), (req, res) => {
     request.get({
-        url: "http://api-service:8888/feeders",
+        url: "http://api:8888/feeders",
         json: true
     }, function(err, r, feeders) {
         if (err) {
@@ -236,7 +236,7 @@ app.get("/admin/feeders", ensureAdmin(), (req, res) => {
         }
         console.dir(feeders);
         request.get({
-            url: "http://api-service:8888/users",
+            url: "http://api:8888/users",
             json: true
         }, function(err, r, users) {
             if (err) {
@@ -254,7 +254,7 @@ app.get("/admin/feeders", ensureAdmin(), (req, res) => {
 });
 app.post("/admin/feeders/:feederId/claim", (req, res) => {
     request.patch({
-        url: "http://api-service:8888/feeders/" + req.params.feederId,
+        url: "http://api:8888/feeders/" + req.params.feederId,
         json: true,
         body: {
             owner: req.body.userId
@@ -273,7 +273,7 @@ app.get("/feeders/claim", ensureLoggedIn(), (req, res) => {
 app.post("/feeders/claim", ensureLoggedIn(), (req, res) => {
     console.log("CLAIM", req.user, req.body);
     request.patch({
-        url: "http://api-service:8888/feeders/" + req.body.feederId,
+        url: "http://api:8888/feeders/" + req.body.feederId,
         json: true,
         body: {
             owner: req.user.id,
@@ -291,6 +291,7 @@ app.post("/feeders/:id/settings", ensureLoggedIn(), (req, res) => {
     console.log("updating schedules");
     console.log(req.body);
     let schedules;
+    if (req.body.id) {
     if (req.body.id.constructor === Array) {
         schedules = req.body.id.reduce((list, id, idx, arr) => {
             list.push({
@@ -307,16 +308,17 @@ app.post("/feeders/:id/settings", ensureLoggedIn(), (req, res) => {
             id: parseInt(req.body.id),
             hour: parseInt(req.body.time.split(":")[0]),
             minute: parseInt(req.body.time.split(":")[1]),
-            cups: parseInt(req.body.cups),
+            cups: parseFloat(req.body.cups),
             deleted: req.body.deleted === "true"
         }];
     }
+}
     var patch = {
         name: req.body.name,
         timezone: req.body.timezone,
     }
     request.patch({
-        url: "http://api-service:8888/feeders/" + req.params.id,
+        url: "http://api:8888/feeders/" + req.params.id,
         json: true,
         body: patch
     }, (err, r, body) => {
@@ -325,7 +327,7 @@ app.post("/feeders/:id/settings", ensureLoggedIn(), (req, res) => {
             res.end()
         } else {
             request.patch({
-                url: "http://api-service:8888/feeders/" + req.params.id + "/schedules",
+                url: "http://api:8888/feeders/" + req.params.id + "/schedules",
                 json: true,
                 body: schedules
             }, (err, r, body) => {
