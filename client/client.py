@@ -25,8 +25,8 @@ class Config(dict):
 				self.update(json.load(config_file))
 		else:
 			self.update({
-				"broker_address":"micahf.com",
-				"port":1882,
+				"broker_address":"broker.feeders.micahf.com",
+				"port":80,
 				"id":str(uuid.uuid4())
 			})
 			self.save()

@@ -113,27 +113,9 @@ passport.serializeUser(function(user, done) {
 passport.deserializeUser(function(user, done) {
     done(null, user);
 });
-
-
-const client = mqtt.connect("mqtt://broker:8888")
-client.on("connect", (err) => {
-    client.subscribe("logs/#");
+app.get("/", (req, res) => {
+	res.redirect("/feeders");
 });
-client.on("error", (err) => {
-    console.log("err", err);
-})
-client.on("close", (err) => {
-    console.log("closed");
-})
-client.on("offline", (err) => {
-    console.log("offline");
-})
-client.on("reconnect", (err) => {
-    console.log("reconecting");
-})
-
-
-
 app.get('/login', function(req, res) {
     console.log("USER", req.user);
     if (req.user) {
@@ -149,7 +131,7 @@ app.get('/logout', function(req, res) {
     req.logout();
     res.redirect('/login');
 });
-app.post("/admin/feeders/:id/delete", ensureAdmin(), (req, res) => {
+app.post("/feeders/:id/delete", ensureAdmin(), (req, res) => {
     request.delete({
         url: "http://api:8888/feeders/" + req.params.id,
         json: true,
@@ -162,7 +144,7 @@ app.post("/admin/feeders/:id/delete", ensureAdmin(), (req, res) => {
     });
 });
 
-app.get("/admin/feeders/unclaimed", ensureAdmin(), (req, res) => {
+app.get("/feeders/unclaimed", ensureAdmin(), (req, res) => {
     request.get({
         url: "http://api:8888/feeders/unclaimed",
         json: true
@@ -190,7 +172,7 @@ app.get("/admin/feeders/unclaimed", ensureAdmin(), (req, res) => {
         });
     });
 });
-app.get("/admin/feeders", ensureAdmin(), (req, res) => {
+app.get("/feeders", ensureAdmin(), (req, res) => {
     request.get({
         url: "http://api:8888/feeders",
         json: true
@@ -218,7 +200,7 @@ app.get("/admin/feeders", ensureAdmin(), (req, res) => {
         });
     });
 });
-app.post("/admin/feeders/:feederId/claim", ensureAdmin(), (req, res) => {
+app.post("/feeders/:feederId/claim", ensureAdmin(), (req, res) => {
     request.patch({
         url: "http://api:8888/feeders/" + req.params.feederId,
         json: true,
@@ -233,10 +215,4 @@ app.post("/admin/feeders/:feederId/claim", ensureAdmin(), (req, res) => {
         res.redirect("/admin/feeders");
     });
 });
-app.get("/admin/logs", ensureAdmin(), (req, res) => {
-    res.render("logs")
-})
-
-//app.use("/admin/logs/socket", proxy('/', {target:'http://broker:8888', ws:true}));
-app.use("/mqtt.js", proxy('/mqtt.js', {target:'http://broker:7777'}));
 app.listen(8888)
