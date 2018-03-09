@@ -5,12 +5,12 @@ services:
     build: web
     depends_on:
       - api
-      - logstash
-    logging:
-      driver: "syslog"
-      options:
-        syslog-address: "tcp://localhost:5000"
-        tag: web
+#      - logstash
+#    logging:
+#      driver: "syslog"
+#      options:
+#        syslog-address: "tcp://localhost:5000"
+#        tag: web
     environment:
      - VIRTUAL_HOST=web.feeders.micahf.com
 
@@ -19,46 +19,46 @@ services:
     depends_on:
       - feeder
       - user
-      - logstash
-    logging:
-      driver: "syslog"
-      options:
-        syslog-address: "tcp://localhost:5000"
-        tag: api
+#      - logstash
+#    logging:
+#      driver: "syslog"
+#      options:
+#        syslog-address: "tcp://localhost:5000"
+#        tag: api
     environment:
      - VIRTUAL_HOST=api.feeders.micahf.com
   db:
     image: mongo
     volumes:
       - /home/micah/db:/data/db
-    logging:
-      driver: "syslog"
-      options:
-        syslog-address: "tcp://localhost:5000"
-        tag: db
-    depends_on:
-      - logstash    
+#    logging:
+#      driver: "syslog"
+#      options:
+#        syslog-address: "tcp://localhost:5000"
+#        tag: db
+#    depends_on:
+#      - logstash
   feeder:
     build: feeder
     depends_on:
       - broker
       - db
-      - logstash
-    logging:
-      driver: "syslog"
-      options:
-        syslog-address: "tcp://localhost:5000"
-        tag: feeder
+#      - logstash
+#    logging:
+#      driver: "syslog"
+#      options:
+#        syslog-address: "tcp://localhost:5000"
+#        tag: feeder
         
   broker:
     build: broker
-    logging:
-      driver: "syslog"
-      options:
-        syslog-address: "tcp://localhost:5000"
-        tag: broker
-    depends_on:
-      - logstash
+#    logging:
+#      driver: "syslog"
+#      options:
+#        syslog-address: "tcp://localhost:5000"
+#        tag: broker
+#    depends_on:
+#      - logstash
     ports:
      - 1882:8888
 
@@ -66,59 +66,59 @@ services:
     build: user
     depends_on:
       - db
-      - logstash
-    logging:
-      driver: "syslog"
-      options:
-        syslog-address: "tcp://localhost:5000"
-        tag: user
+#      - logstash
+#    logging:
+#      driver: "syslog"
+#      options:
+#        syslog-address: "tcp://localhost:5000"
+#        tag: user
         
   admin:
     build: admin
-    logging:
-      driver: "syslog"
-      options:
-        syslog-address: "tcp://localhost:5000"
-        tag: admin
-    depends_on:
-      - logstash    
+#    logging:
+#      driver: "syslog"
+#      options:
+#        syslog-address: "tcp://localhost:5000"
+#        tag: admin
+#    depends_on:
+#      - logstash
     environment:
      - VIRTUAL_HOST=admin.feeders.micahf.com
-  elasticsearch:
-    build:
-      context: elasticsearch/
-    volumes:
-      - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
-    ports:
-      - "9200:9200"
-      - "9300:9300"
-    environment:
-      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+#  elasticsearch:
+#    build:
+#      context: elasticsearch/
+#    volumes:
+#      - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+#    ports:
+#      - "9200:9200"
+#      - "9300:9300"
+#    environment:
+#      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
 
-  logstash:
-    build:
-      context: logstash/
-    volumes:
-      - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
-      - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
-    ports:
-      - "5000:5000"
-    environment:
-      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
-    depends_on:
-      - elasticsearch
+#  logstash:
+#    build:
+#      context: logstash/
+#    volumes:
+#      - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
+#      - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
+#    ports:
+#      - "5000:5000"
+#    environment:
+#      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+#    depends_on:
+#      - elasticsearch
 
-  kibana:
-    build:
-      context: kibana/
-    volumes:
-      - ./kibana/config/:/usr/share/kibana/config:ro
-    ports:
-      - "5601:5601"
-    depends_on:
-      - elasticsearch
-    environment:
-     - VIRTUAL_HOST=kibana.feeders.micahf.com
+#  kibana:
+#    build:
+#      context: kibana/
+#    volumes:
+#      - ./kibana/config/:/usr/share/kibana/config:ro
+#    ports:
+#      - "5601:5601"
+#    depends_on:
+#      - elasticsearch
+#    environment:
+#     - VIRTUAL_HOST=kibana.feeders.micahf.com
 
   proxy:
     image: jwilder/nginx-proxy:latest
@@ -126,16 +126,20 @@ services:
       - "80:80"
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
-    logging:
-      driver: "syslog"
-      options:
-        syslog-address: "tcp://localhost:5000"
-        tag: proxy
+#    logging:
+#      driver: "syslog"
+#      options:
+#        syslog-address: "tcp://localhost:5000"
+#        tag: proxy
+#    depends_on:
+#     - logstash
 
   redis:
     image: redis
-    logging:
-      driver: "syslog"
-      options:
-        syslog-address: "tcp://localhost:5000"
-        tag: redis
+#    logging:
+#      driver: "syslog"
+#      options:
+#        syslog-address: "tcp://localhost:5000"
+#        tag: redis
+#    depends_on:
+#     - logstash
