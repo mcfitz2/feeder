@@ -1,20 +1,20 @@
 {
-    "name": "api",
-    "version": "1.0.0",
-    "description": "",
-    "main": "index.js",
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1",
-        "start": "node index.js"
-    },
-    "author": "",
-    "license": "ISC",
-    "dependencies": {
-        "body-parser": "^1.17.2",
-        "express": "^4.15.3",
-        "grant-express": "^3.7.2",
-        "mongodb": "^2.2.29",
-        "mqtt-rpc": "git+https://git@github.com/mcfitz2/mqtt-rpc.git"
-
-    }
+  "name": "api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "busmq": "^2.9.3",
+    "express": "^4.15.3",
+    "grant-express": "^3.7.2",
+    "mongodb": "^2.2.29",
+    "mqtt-rpc": "git+https://git@github.com/mcfitz2/mqtt-rpc.git"
+  }
 }
