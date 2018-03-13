@@ -15,7 +15,6 @@
     "mongodb": "^2.2.27",
     "mongoose": "^4.10.5",
     "mqtt": "^2.8.0",
-    "mqtt-route": "0.0.1",
-    "mqtt-rpc": "git+https://git@github.com/mcfitz2/mqtt-rpc.git"
+    "mqtt-route": "0.0.1"
   }
 }

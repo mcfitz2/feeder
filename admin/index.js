@@ -16,18 +16,20 @@ const expressWs = require('express-ws')(app);
 const expressWinston = require("express-winston");
 const winston = require("winston");
 app.use(expressWinston.logger({
-      transports: [
+    transports: [
         new winston.transports.Console({
-          json: true,
-          colorize: true
+            json: true,
+            colorize: true
         })
-      ],
-      meta: true, // optional: control whether you want to log the meta data about the request (default to true)
-      msg: "HTTP {{req.method}} {{req.url}}", // optional: customize the default logging message. E.g. "{{res.statusCode}} {{req.method}} {{res.responseTime}}ms {{req.url}}"
-      expressFormat: true, // Use the default Express/morgan request formatting. Enabling this will override any msg if true. Will only output colors with colorize set to true
-      colorize: false, // Color the text and status code, using the Express/morgan color palette (text: gray, status: default green, 3XX cyan, 4XX yellow, 5XX red).
-      ignoreRoute: function (req, res) { return false; } // optional: allows to skip some log messages based on request and/or response
-    }));
+    ],
+    meta: true, // optional: control whether you want to log the meta data about the request (default to true)
+    msg: "HTTP {{req.method}} {{req.url}}", // optional: customize the default logging message. E.g. "{{res.statusCode}} {{req.method}} {{res.responseTime}}ms {{req.url}}"
+    expressFormat: true, // Use the default Express/morgan request formatting. Enabling this will override any msg if true. Will only output colors with colorize set to true
+    colorize: false, // Color the text and status code, using the Express/morgan color palette (text: gray, status: default green, 3XX cyan, 4XX yellow, 5XX red).
+    ignoreRoute: function(req, res) {
+        return false;
+    } // optional: allows to skip some log messages based on request and/or response
+}));
 
 app.engine('handlebars', exphbs({
     defaultLayout: 'main'
@@ -66,7 +68,7 @@ function ensureAdmin() {
     };
 }
 passport.use(new LocalStrategy(function(username, password, done) {
-	console.log("passport auth", username);
+    console.log("passport auth", username);
     request.post({
         url: "http://api:8888/users/authenticate",
         body: {
@@ -114,7 +116,7 @@ passport.deserializeUser(function(user, done) {
     done(null, user);
 });
 app.get("/", (req, res) => {
-	res.redirect("/feeders");
+    res.redirect("/feeders");
 });
 app.get('/login', function(req, res) {
     console.log("USER", req.user);

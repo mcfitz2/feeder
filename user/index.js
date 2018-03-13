@@ -1,26 +1,24 @@
-var User = require('./schemas/user');
+/*jslint node:true,unparam:true */
+
+var User = require("./schemas/user");
 var mongoose = require("mongoose");
-var mqtt = require('mqtt')
-var mqttrpc = require('mqtt-rpc')
+var Bus = require("busmq");
 mongoose.set("debug", true)
-mongoose.connect("mongodb://db/feeders").then(() => {
-    var mqttclient = mqtt.connect('mqtt://broker:8888');
-    var server = mqttrpc.server(mqttclient);
-    server.format('json');
-    server.provide('RPC/users', 'registerUser', function(context, reply) {
+let methods = {
+    'registerUser': (context, reply) => {
         User.register(new User({
             username: context.username,
             email: context.email
         }), context.password, reply);
-    });
-    server.provide('RPC/users', 'getUser', function(context, reply) {
+    },
+    'getUser': (context, reply) => {
         User.findById(context.userId).lean().then((user) => {
             reply(null, user);
         }).catch((err) => {
             reply(err);
         })
-    });
-    server.provide('RPC/users', 'getUsers', function(context, reply) {
+    },
+    'getUsers': (context, reply) => {
         User.find({}).lean().then((users) => {
             reply(null, users.map((user) => {
                 user._id = user._id.toString();
@@ -30,23 +28,23 @@ mongoose.connect("mongodb://db/feeders").then(() => {
             console.error("Mongoose Error:", err)
             reply(err);
         });
-    });
-    server.provide('RPC/users', 'deleteUser', function(context, reply) {
+    },
+    'deleteUser': (context, reply) => {
         User.findOneAndRemove({
             _id: context.userId
         }).then((user) => {
             reply(null, user);
         }).catch(reply);
-    });
-    server.provide('RPC/users', 'authenticateUser', function(context, reply) {
-	console.log("got auth request",  context);
+    },
+    'authenticateUser': (context, reply) => {
+        console.log("got auth request", context);
         User.findOne({
             username: context.username
         }).exec((err, user) => {
             if (user) {
                 var fixed = user.toObject({
                     getters: true,
-                    transform: function(doc, ret, options) {
+                    transform: (doc, ret, options) => {
                         delete ret._id;
                         return ret;
                     }
@@ -56,7 +54,7 @@ mongoose.connect("mongodb://db/feeders").then(() => {
                     if (err) {
                         reply(err, false);
                     } else {
-			console.log("sending response", fixed);
+                        console.log("sending response", fixed);
                         reply(err, fixed)
                     }
                 });
@@ -64,5 +62,34 @@ mongoose.connect("mongodb://db/feeders").then(() => {
                 reply("no user");
             }
         });
+    }
+}
+
+mongoose.connect("mongodb://db/feeders").then(() => {
+    console.log("User service connected to  DB");
+    const bus = Bus.create({
+        redis: ['redis://redis:6379']
     });
+    console.log(bus);
+    bus.on("online", () => {
+        console.log("User Service connected to BUSMQ");
+        let handler = bus.service("user");
+        handler.on("request", (request, reply) => {
+            console.log("Got BUSMQ request. request=", request)
+            methods[request.method](request, reply);
+        });
+        handler.serve(() => {
+            console.log("serving user service");
+        });
+    });
+    bus.on("offline", () => {
+        console.log("Redis is down");
+    });
+    bus.on("error", (err) => {
+        console.log("BUSMQ error:", err);
+    });
+
+    console.log("Connecting");
+    bus.connect();
+
 });

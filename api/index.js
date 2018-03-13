@@ -1,30 +1,49 @@
-var express = require("express");
-var app = express();
-var bodyParser = require("body-parser");
-var mqtt = require('mqtt'),
-    mqttrpc = require('mqtt-rpc')
+const express = require("express");
+const app = express();
+const bodyParser = require("body-parser");
+const mqtt = require('mqtt');
 app.use(bodyParser.json());
+const Bus = require("busmq");
+const bus = Bus.create({
+    redis: ['redis://redis:6379']
+});
+var userClient = bus.service("user");
+var feederClient = bus.service("feeder");
 
-
-var mqttclient = mqtt.connect('mqtt://broker:8888', );
-var client = mqttrpc.client(mqttclient);
-
+bus.on('online', () => {
+    console.log("API Connected to BUSMQ");
+    userClient.connect({
+        reqTimeout: 50000
+    }, () => {
+        console.log("API connected to User Service")
+    });
+    feederClient.connect({
+        reqTimeout: 50000
+    }, () => {
+        console.log("API connected to Feeder Service")
+    });
+});
 app.post("/users/authenticate", (req, res) => {
     console.log("Got auth request", req.body);
-    client.callRemote('RPC/users', 'authenticateUser', {
+    userClient.request({
+        method: 'authenticateUser',
         username: req.body.username,
         password: req.body.password
     }, function(err, user) {
+        console.log("response from BUSMQ", err, user);
         if (err) {
+            console.log(err, user);
             res.status(401);
             return res.send(err).end();
         } else {
+            console.log("auth response from BUSMQ", err, user);
             return res.json(user);
         }
     });
 });
 app.get("/users/:id", (req, res) => {
-    client.callRemote('RPC/users', 'getUser', {
+    userClient.request({
+        method: 'getUser',
         userId: req.params.id
     }, function(err, user) {
         if (err) {
@@ -35,7 +54,9 @@ app.get("/users/:id", (req, res) => {
     })
 });
 app.get("/users/", (req, res) => {
-    client.callRemote('RPC/users', 'getUsers', {}, function(err, users) {
+    userClient.request({
+        method: 'getUsers'
+    }, (err, users) => {
         if (err) {
             res.status(500);
             res.send(err).end()
@@ -45,7 +66,8 @@ app.get("/users/", (req, res) => {
 });
 app.get("/users/:id/feeders", (req, res) => {
     console.log("Getting feeders for", req.params.id);
-    client.callRemote('RPC/feeders', 'getFeedersByOwner', {
+    feederClient.request({
+        method: 'getFeedersByOwner',
         userId: req.params.id
     }, function(err, feeders) {
         if (err) {
@@ -56,7 +78,9 @@ app.get("/users/:id/feeders", (req, res) => {
     })
 });
 app.get("/feeders", (req, res) => { //get a single feeder
-    client.callRemote('RPC/feeders', 'getFeeders', {}, (err, feeder) => {
+    feederClient.request({
+        method: 'getFeeders'
+    }, (err, feeder) => {
         if (err) {
             res.status(500);
             return res.send(err).end();
@@ -65,7 +89,9 @@ app.get("/feeders", (req, res) => { //get a single feeder
     });
 });
 app.get("/feeders/unclaimed", (req, res) => { //get a single feeder
-    client.callRemote('RPC/feeders', 'getUnclaimedFeeders', {}, (err, feeder) => {
+    feederClient.request({
+        method: 'getUnclaimedFeeders'
+    }, (err, feeder) => {
         if (err) {
             res.status(500);
             return res.send(err).end();
@@ -74,7 +100,8 @@ app.get("/feeders/unclaimed", (req, res) => { //get a single feeder
     });
 });
 app.get("/feeders/:id", (req, res) => { //get a single feeder
-    client.callRemote('RPC/feeders', 'getFeeder', {
+    feederClient.request({
+        method: 'getFeeder',
         feederId: req.params.id
     }, (err, feeder) => {
         if (err) {
@@ -85,7 +112,8 @@ app.get("/feeders/:id", (req, res) => { //get a single feeder
     });
 });
 app.patch("/feeders/:id", (req, res) => { //update a single feeder
-    client.callRemote('RPC/feeders', 'updateFeeder', {
+    feederClient.request({
+        method: 'updateFeeder',
         feederId: req.params.id,
         feederObj: req.body
     }, (err) => {
@@ -114,7 +142,8 @@ app.patch("/feeders/:id/schedules", (req, res) => { //update schedules
     ]);
     console.log("ToDelete", toDelete)
     Promise.all([new Promise((resolve, reject) => {
-        client.callRemote('RPC/feeders', 'deleteSchedules', {
+        feederClient.request({
+            method: 'deleteSchedules',
             feederId: req.params.id,
             schedules: toDelete
         }, (err) => {
@@ -125,7 +154,8 @@ app.patch("/feeders/:id/schedules", (req, res) => { //update schedules
             }
         });
     }), new Promise((resolve, reject) => {
-        client.callRemote('RPC/feeders', 'setSchedules', {
+        feederClient.request({
+            method: 'setSchedules',
             feederId: req.params.id,
             schedules: schedules
         }, (err) => {
@@ -147,7 +177,8 @@ app.patch("/feeders/:id/schedules", (req, res) => { //update schedules
 });
 app.delete("/feeders/:id", (req, res) => { //delete a feeder
     console.log("Deleting feeder ID =", req.params.id)
-    client.callRemote('RPC/feeders', 'deleteFeeder', {
+    feederClient.request({
+        method: 'deleteFeeder',
         feederId: req.params.id,
         feederObj: req.body
     }, (err) => {
@@ -161,7 +192,8 @@ app.delete("/feeders/:id", (req, res) => { //delete a feeder
 });
 app.post("/feeders/:id/feed", (req, res) => { //send a feed command to a feeder
     console.dir(req.body);
-    client.callRemote('RPC/feeders', 'feed', {
+    feederClient.request({
+        method: 'feed',
         feederId: req.params.id,
         cups: req.body.cups
     }, (err) => {
@@ -175,4 +207,6 @@ app.post("/feeders/:id/feed", (req, res) => { //send a feed command to a feeder
         }
     });
 });
+
+bus.connect();
 app.listen(8888);

@@ -16,11 +16,11 @@ var settings = {
         name: "broker",
         level: 30,
     },
-http: {
-	    port: 7777,
-    bundle: true,
-    static: './'
-  }
+    http: {
+        port: 7777,
+        bundle: true,
+        static: './'
+    }
 };
 
 var server = new mosca.Server(settings);

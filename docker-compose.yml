@@ -122,6 +122,8 @@ services:
 
   proxy:
     image: jwilder/nginx-proxy:latest
+#    build:
+#      context: proxy/
     ports:
       - "80:80"
     volumes:
@@ -143,3 +145,8 @@ services:
 #        tag: redis
 #    depends_on:
 #     - logstash
+  notify:
+    build:
+      context: notify/
+    depends_on:
+     - redis    

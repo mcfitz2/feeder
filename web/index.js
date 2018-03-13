@@ -60,7 +60,7 @@ passport.use(new LocalStrategy(function(username, password, done) {
             return done(err, false);
 
         } else {
-            console.log("BODY", body)
+            console.log("BODY", body, res.statusCode)
             return done(null, body);
         }
     })
@@ -292,27 +292,27 @@ app.post("/feeders/:id/settings", ensureLoggedIn(), (req, res) => {
     console.log(req.body);
     let schedules;
     if (req.body.id) {
-    if (req.body.id.constructor === Array) {
-        schedules = req.body.id.reduce((list, id, idx, arr) => {
-            list.push({
-                id: parseInt(id),
-                hour: parseInt(req.body.time[idx].split(":")[0]),
-                minute: parseInt(req.body.time[idx].split(":")[1]),
-                cups: parseInt(req.body.cups[idx]),
-                deleted: req.body.deleted[idx] === "true"
-            });
-            return list;
-        }, []);
-    } else if (req.body.time && req.body.cups) {
-        schedules = [{
-            id: parseInt(req.body.id),
-            hour: parseInt(req.body.time.split(":")[0]),
-            minute: parseInt(req.body.time.split(":")[1]),
-            cups: parseFloat(req.body.cups),
-            deleted: req.body.deleted === "true"
-        }];
+        if (req.body.id.constructor === Array) {
+            schedules = req.body.id.reduce((list, id, idx, arr) => {
+                list.push({
+                    id: parseInt(id),
+                    hour: parseInt(req.body.time[idx].split(":")[0]),
+                    minute: parseInt(req.body.time[idx].split(":")[1]),
+                    cups: parseInt(req.body.cups[idx]),
+                    deleted: req.body.deleted[idx] === "true"
+                });
+                return list;
+            }, []);
+        } else if (req.body.time && req.body.cups) {
+            schedules = [{
+                id: parseInt(req.body.id),
+                hour: parseInt(req.body.time.split(":")[0]),
+                minute: parseInt(req.body.time.split(":")[1]),
+                cups: parseFloat(req.body.cups),
+                deleted: req.body.deleted === "true"
+            }];
+        }
     }
-}
     var patch = {
         name: req.body.name,
         timezone: req.body.timezone,

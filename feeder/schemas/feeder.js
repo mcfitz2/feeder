@@ -9,7 +9,11 @@ var scheduleSchema = new Schema({
 });
 var feederSchema = new Schema({
     _id: String,
-    name: {type:String, required:true, default: "New Feeder"},
+    name: {
+        type: String,
+        required: true,
+        default: "New Feeder"
+    },
     lastSeen: Date,
     lastFeeding: Date,
     schedules: [scheduleSchema],
