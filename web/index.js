@@ -125,6 +125,9 @@ app.get('/logout', function(req, res) {
     req.logout();
     res.redirect('/login');
 });
+app.get("/", (req, res) => {
+    res.redirect("/dashboard");
+});
 app.get("/dashboard", ensureLoggedIn(), function(req, res) {
     console.log("Dashboard", "LOGGED IN", req.user);
     request.get({
